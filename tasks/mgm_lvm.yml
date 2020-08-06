@@ -1,0 +1,24 @@
+---
+- name: LVM - Conduct resize test of physical volumes
+  shell: "pvresize {{ lvm_device }}{{ lvm_device_part_number }}"
+
+- name: "Resize lv {{ lv_home_name }} in {{ lvm_vg }}"
+  lvol:
+    vg: "{{ lvm_vg }}"
+    lv: {{ lv_home_name }}
+    size: "{{ lvm_home_sizing }}PVS"
+    resizefs: true
+
+- name: "Resize lv {{ lv_var_name }} in {{ lvm_vg }}"
+  lvol:
+    vg: "{{ lvm_vg }}"
+    lv: {{ lv_var_name }}
+    size: "{{ lvm_var_sizing }}PVS"
+    resizefs: true
+
+- name: "Resize lv {{ lv_root_name }} in {{ lvm_vg }}"
+  lvol:
+    vg: "{{ lvm_vg }}"
+    lv: {{ lv_root_name }}
+    size: "{{ lvm_root_sizing }}PVS"
+    resizefs: true

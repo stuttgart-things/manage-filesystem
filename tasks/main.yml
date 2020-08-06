@@ -1,0 +1,9 @@
+---
+- name: Import get information tasks | WIP
+  include_tasks: get_information.yml
+
+- name: Import partition tasks
+  include_tasks: mgm_partition.yml
+
+- name: Import lvm tasks
+  include_tasks: mgm_lvm.yml

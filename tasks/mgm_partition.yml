@@ -1,0 +1,4 @@
+---
+- name: Partition - Conduct resize physical disk partition
+  shell: "growpart {{ lvm_device }} {{ lvm_device_part_number }}"
+  ignore_errors: yes
