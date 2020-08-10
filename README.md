@@ -62,13 +62,19 @@ ansible-playbook -i inventory manage-filesystem.yml
 
 This role need variables
 
-1. NFS Server
+1. requiered vars:
     - lvm_device: /dev/sda 
     - lvm_device_part_number: 3
     - lvm_vg: vg0                       #LVM volume group name
     - lvm_home_sizing: 10%
     - lvm_root_sizing: 60%
     - lvm_var_sizing: 30%
+
+2. defaults: You don't need to change or add this variables.
+    - part_sizing: 100%                 #Size claimed from the vhd by LVM
+    - lv_home_name: home
+    - lv_var_name: var
+    - lv_root_name: root
 
 **Note: You can easy check your partition number via fdisk or parted**
 
