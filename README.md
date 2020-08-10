@@ -16,7 +16,7 @@ ansible-galaxy install -r /tmp/requirements.yaml --force
 </details>
 
 
-<details><summary>Example playbook for an nfs client installation with mount</summary>
+<details><summary>Example playbook </summary>
 
 ```
 - hosts: "fs"
@@ -70,7 +70,7 @@ This role need variables
     - lvm_root_sizing: 60%
     - lvm_var_sizing: 30%
 
-2. defaults: You don't need to change or add this variables.
+2. defaults: You don't need to change or add this variables.(Unless you want to overwrite it with other values)
     - part_sizing: 100%                 #Size claimed from the vhd by LVM
     - lv_home_name: home
     - lv_var_name: var
