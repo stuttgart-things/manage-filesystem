@@ -1,5 +1,5 @@
 # Ansible Role: manage-filesysten
-This ansible role can handel repartitioning (LVM) with filesystem resizing support. For example, you can simply expand the LVM after enlarging the vhd.
+This ansible role can handle repartitioning (LVM) with filesystem resizing support. For example, you can simply expand the LVM after enlarging the vhd.
 
 ## Example playbooks to use this role
 
@@ -7,7 +7,7 @@ This ansible role can handel repartitioning (LVM) with filesystem resizing suppo
 
 ```
 cat <<EOF > /tmp/requirements.yaml
-- src: git@codehub.sva.de:Lab/stuttgart-things/ansible/manage-filesysten.git
+- src: git@codehub.sva.de:Lab/stuttgart-things/supporting-roles/manage-filesysten.git
   scm: git
 EOF
 ansible-galaxy install -r /tmp/requirements.yaml --force
@@ -54,7 +54,7 @@ ansible-playbook -i inventory manage-filesystem.yml
 
 
 ## Role TODOs
-- Full list visible at https://codehub.sva.de/Lab/stuttgart-things/ansible/manage-filesystem/-/issues
+- Full list visible at https://codehub.sva.de/Lab/stuttgart-things/supporting-roles/manage-filesystem/-/issues
 
 
 
