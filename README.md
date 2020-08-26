@@ -7,7 +7,7 @@ This ansible role can handle repartitioning (LVM) with filesystem resizing suppo
 
 ```
 cat <<EOF > /tmp/requirements.yaml
-- src: git@codehub.sva.de:Lab/stuttgart-things/supporting-roles/manage-filesysten.git
+- src: git@codehub.sva.de:Lab/stuttgart-things/supporting-roles/manage-filesystem.git
   scm: git
 EOF
 ansible-galaxy install -r /tmp/requirements.yaml --force
