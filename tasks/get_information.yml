@@ -6,6 +6,10 @@
 
 - name: Output disks
   debug:
+    var: part_info
+
+- name: Output disks
+  debug:
     var: part_info.ansible_devices.sda.partitions
  
  # - name: Output disks
