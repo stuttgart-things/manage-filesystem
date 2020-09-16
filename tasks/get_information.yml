@@ -15,12 +15,10 @@
 - name: "Read partition information from {{ lvm_device_auto }}"
   shell: "parted {{ lvm_device_auto }} unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
   become: yes
-  register: part_free_space
-
-#part_free_space.stdout
+  register: part_free_space_unfiltered
 
 - set_fact:
-    part_free_space_filter: "{{ 1.25 | replace('GB', '') | int }}"
+    part_free_space: "{{ part_free_space_unfiltered.stdout | replace('GB', '') | int }}"
 
 - debug:
-    msg: "{{ lvm_device_auto }} has: {{ part_free_space_filter }} GB unused"
+    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused"
