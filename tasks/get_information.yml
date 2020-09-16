@@ -11,7 +11,7 @@
 - name: Read partition 
   shell: "parted /dev/sda unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
   become: yes
-  register: part_free_space
+  register: part_free_space.stdout
 
 - name: Output disks
   debug:
