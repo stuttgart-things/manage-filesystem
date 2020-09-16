@@ -1,12 +1,11 @@
 ---
-- name: Read partition layout
-  setup:
-    filter: "ansible_devices"
-  register: part_info
-
 # - name: Output disks
 #   debug:
-#     var: part_info.ansible_facts.ansible_devices.sda.partitions
+#     var: ansible_facts.devices.sda
+
+- name: Output disks
+  debug:
+    var: ansible_facts.ansible_devices.keys() | map('regex_search', 'sd.*') | select('string') | list
 
 - name: Output facts
   debug:
