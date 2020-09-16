@@ -18,7 +18,7 @@
   register: part_free_space
 
 - debug:
-    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} unused"
+    msg: "{{ lvm_device_auto }} has: {{ part_free_space.stdout }} unused"
 
 # - name: Output disks
 #   debug:
