@@ -21,4 +21,9 @@
     part_free_space: "{{ part_free_space_unfiltered.stdout | replace('GB', '') | int }}"
 
 - debug:
-    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused"
+    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
+    when: part_free_space > 1
+
+- debug:
+    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
+    when: part_free_space < 1
