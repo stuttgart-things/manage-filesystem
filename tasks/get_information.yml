@@ -3,15 +3,15 @@
     lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
 
 - set_fact:
-    lvm_device_auto: "/dev/{{ lvm_disk }}"
+    lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
 
 - name: Output disks
   debug:
     var: lvm_device_auto
 
-- name: Output facts
-  debug:
-    var: ansible_facts
+# - name: Output facts
+#   debug:
+#     var: ansible_facts
 
 - name: Read partition 
   shell: "parted /dev/sda unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
