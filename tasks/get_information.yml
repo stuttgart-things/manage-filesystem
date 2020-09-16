@@ -22,8 +22,8 @@
 
 - debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
-  when: part_free_space | int > 1 
+  when: part_free_space | int >= 1 
 
 - debug:
-    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
-  when: part_free_space | init < 1
+    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, no enlargement needed ..."
+  when: part_free_space | int < 1
