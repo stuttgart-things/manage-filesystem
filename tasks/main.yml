@@ -4,6 +4,8 @@
 
 - name: Import partition tasks
   include_tasks: mgm_partition.yml
+  when: part_free_space | int >= 1
 
 - name: Import lvm tasks
   include_tasks: mgm_lvm.yml
+  when: part_free_space | int >= 1 
