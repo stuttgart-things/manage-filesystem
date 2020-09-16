@@ -1,5 +1,5 @@
 ---
-- name: Import get information tasks | WIP
+- name: Import get information tasks
   include_tasks: get_information.yml
 
 - name: Import partition tasks
