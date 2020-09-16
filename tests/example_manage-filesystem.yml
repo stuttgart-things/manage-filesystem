@@ -4,7 +4,7 @@
   become: true
   vars:
     lvm_device: /dev/sda
-    lvm_device_part_number: 3
+    lvm_device_part_number: 2
     lvm_vg: vg0
     lvm_home_sizing: 10%
     lvm_root_sizing: 60%

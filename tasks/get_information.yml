@@ -1,17 +1,20 @@
 ---
-- name: Read partition information
+- name: Read partition layout
   setup:
     filter: "ansible_devices"
   register: part_info
 
 - name: Output disks
   debug:
-    var: part_info
+    var: part_info.ansible_facts.ansible_devices.sda.partitions
+ 
+- name: Read partition 
+  command: "parted /dev/sda unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
+  register: part_free_space
 
 - name: Output disks
   debug:
-    var: part_info.ansible_facts.ansible_devices.sda.partitions
- 
+    var: part_free_space
  # - name: Output disks
  #   debug:
  #     var: hostvars[inventory_hostname].ansible_devices.sda.partitions
