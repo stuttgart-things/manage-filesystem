@@ -6,7 +6,7 @@
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
 
 - debug:
-  msg: "Disk detected: {{ lvm_device_auto }}"
+    msg: "Disk detected: {{ lvm_device_auto }}"
 
 # - name: Output facts
 #   debug:
@@ -18,7 +18,7 @@
   register: part_free_space
 
 - debug:
-  msg: "{{ lvm_device_auto }} has: {{ part_free_space }} unused"
+    msg: "{{ lvm_device_auto }} has: {{ part_free_space }} unused"
 
 # - name: Output disks
 #   debug:
