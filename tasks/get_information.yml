@@ -1,11 +1,13 @@
 ---
-# - name: Output disks
-#   debug:
-#     var: ansible_facts.devices.sda
+- set_fact:
+    lvm_disk: ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list
+
+- set_fact:
+    lvm_device_auto: "/dev/{{ lvm_disk }}"
 
 - name: Output disks
   debug:
-    var: ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list
+    var: lvm_device_auto
 
 - name: Output facts
   debug:
