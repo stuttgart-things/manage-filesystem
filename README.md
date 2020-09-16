@@ -91,6 +91,7 @@ Server and client:
 ```
 DATE         WHO       		  WHAT
 20200810     Marcel Zapf  	  First Release
+20200916     Marcel Zapf      Added logic to check partition is too small
 ```
 
 License
