@@ -5,7 +5,7 @@
 
 - name: Output disks
   debug:
-    var: ansible_facts.ansible_devices.keys() | map('regex_search', 'sd.*') | select('string') | list
+    var: ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list
 
 - name: Output facts
   debug:
