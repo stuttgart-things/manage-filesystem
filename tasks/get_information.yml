@@ -4,18 +4,23 @@
     filter: "ansible_devices"
   register: part_info
 
-- name: Output disks
+# - name: Output disks
+#   debug:
+#     var: part_info.ansible_facts.ansible_devices.sda.partitions
+
+- name: Output facts
   debug:
-    var: part_info.ansible_facts.ansible_devices.sda.partitions
- 
+    var: ansible_facts
+
 - name: Read partition 
   shell: "parted /dev/sda unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
   become: yes
   register: part_free_space
 
-- name: Output disks
-  debug:
-    var: part_free_space.stdout
+# - name: Output disks
+#   debug:
+#     var: part_free_space.stdout
+
  # - name: Output disks
  #   debug:
  #     var: hostvars[inventory_hostname].ansible_devices.sda.partitions
