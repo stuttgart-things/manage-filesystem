@@ -5,9 +5,8 @@
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
 
-- name: Output disks
-  debug:
-    var: lvm_device_auto
+- debug:
+  msg: "Disk detected: {{ lvm_device_auto }}"
 
 # - name: Output facts
 #   debug:
