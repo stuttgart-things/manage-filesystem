@@ -9,7 +9,7 @@
     var: part_info.ansible_facts.ansible_devices.sda.partitions
  
 - name: Read partition 
-  command: "parted /dev/sda unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
+  shell: "parted /dev/sda unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
   become: yes
   register: part_free_space
 
