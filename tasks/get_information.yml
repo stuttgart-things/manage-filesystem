@@ -1,7 +1,12 @@
 ---
-  #- name: Output disks
-  #  debug:
-  #    var: hostvars[inventory_hostname].ansible_devices.keys() | map('regex_search', 'sd.*') | select('string') | list
+- name: Read partition information
+  setup:
+    filter: "ansible_devices"
+  register: part_info
+
+- name: Output disks
+  debug:
+    var: part_info.ansible_devices.sda.partitions
  
  # - name: Output disks
  #   debug:
