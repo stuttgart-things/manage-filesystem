@@ -8,9 +8,10 @@
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
-# - name: Output facts
-#   debug:
-#     var: ansible_facts
+- name: Output facts
+  debug:
+    var: ansible_facts
+  when: debug | bool
 
 - name: "Read partition information from {{ lvm_device_auto }}"
   shell: "parted {{ lvm_device_auto }} unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
