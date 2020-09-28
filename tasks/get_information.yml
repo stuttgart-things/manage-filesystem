@@ -12,7 +12,7 @@
     msg: "Disk detected: {{ lvm_device_auto }}"
 
 - debug:
-    msg: "PV detected: {{ vg_name_auto[0] }}"
+    msg: "PV detected: {{ vg_name_auto }}"
 
 - name: Output facts
   debug:
