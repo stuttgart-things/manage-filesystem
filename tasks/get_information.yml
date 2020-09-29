@@ -31,7 +31,7 @@
 - set_fact:
     part_free_space: "{{ part_free_space_unfiltered.stdout | replace('GB', '') | int }}"
     lvm_vg: "{{ lvm_vol_group.stdout }}"
-    lvm_device_part_number: "{{ 'lvm_device.stdout'[-1] }}"
+    lvm_device_part_number: "{{ 'lvm_device.stdout' }}"
 
 - debug:
     msg: "LVM found: PV: {{ lvm_vol_group.stdout }} on device {{ lvm_device_auto }} with part id: {{ lvm_device_part_number }}"
