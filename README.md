@@ -62,9 +62,6 @@ ansible-playbook -i inventory manage-filesystem.yml
 This role need variables
 
 1. requiered vars:
-    - lvm_device: /dev/sda 
-    - lvm_device_part_number: 3
-    - lvm_vg: vg0                       #LVM volume group name
     - lvm_home_sizing: 10%
     - lvm_root_sizing: 60%
     - lvm_var_sizing: 30%
