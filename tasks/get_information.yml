@@ -8,16 +8,8 @@
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
-- name: Get LVM facts
-  setup:
-    gather_subset:
-      - '!all'
-      - '!any'
-      - facter
-  register: lvm_facts
-
 - debug:
-    msg: "PV detected: {{ lvm_facts }}"
+    msg: "PV detected: {{ ansible_facts.lvm | grep pvs }}"
 
 - name: Output facts
   debug:
