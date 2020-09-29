@@ -18,9 +18,6 @@
   become: yes
   register: lvm_device
 
-- debug:
-    msg: "LVM found: PV: {{ lvm_vol_group.stdout }} on device {{ lvm_device.stdout }}"
-
 - name: Output facts
   debug:
     var: ansible_facts
@@ -34,6 +31,10 @@
 - set_fact:
     part_free_space: "{{ part_free_space_unfiltered.stdout | replace('GB', '') | int }}"
     lvm_vg: "{{ lvm_vol_group.stdout }}"
+    lvm_device_part_number: "{{ 'lvm_device.stdout'[-1] }}"
+
+- debug:
+    msg: "LVM found: PV: {{ lvm_vol_group.stdout }} on device {{ lvm_device_auto }} with part id: {{ lvm_device_part_number }}"
 
 - debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
