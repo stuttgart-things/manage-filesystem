@@ -5,13 +5,13 @@
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
     # vg_name_auto: "{{ ansible_facts.lvm | json_query('pvs[*].vg') }}"
-    vg_name_auto: "{{ ansible_facts }}"
+    vg_name_auto: "{{ ansible_facts.lvm }}"
 
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
 - debug:
-    msg: "PV detected: {{ vg_name_auto }}"
+    msg: "PV detected: {{ ansible_facts.lvm }}"
 
 - name: Output facts
   debug:
