@@ -18,7 +18,7 @@
   register: lvm_facts
 
 - debug:
-    msg: "PV detected: {{ lvm_facts }}"
+    msg: "PV detected: {{ ansible_facts.lvm }}"
 
 - name: Output facts
   debug:
