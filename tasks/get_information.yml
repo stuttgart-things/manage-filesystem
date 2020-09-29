@@ -8,15 +8,17 @@
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
-- name: Collect only facts returned by facter
+- name: Get LVM facts
   setup:
     gather_subset:
       - '!all'
       - '!any'
       - facter
+    filter: lvm
+  register: lvm_facts
 
 - debug:
-    msg: "PV detected: "
+    msg: "PV detected: {{ lvm_facts }}"
 
 - name: Output facts
   debug:
