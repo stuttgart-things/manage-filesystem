@@ -1,5 +1,7 @@
 # Ansible Role: manage-filesysten
-This ansible role can handle repartitioning (LVM) with filesystem resizing support. For example, you can simply expand the LVM after enlarging the vhd.
+This ansible role can handle repartitioning (LVM) with filesystem resizing support. For example, you can simply expand the LVM after enlarging the vhd. 
+
+The role automatically detects the LVM on the system. The partitions and the device id are also recognized automatically.
 
 ## Example playbooks to use this role
 
@@ -23,9 +25,6 @@ ansible-galaxy install -r /tmp/requirements.yaml --force
   gather_facts: true
   become: true
   vars:
-    lvm_device: /dev/sda
-    lvm_device_part_number: 3
-    lvm_vg: vg0
     lvm_home_sizing: 10%
     lvm_root_sizing: 60%
     lvm_var_sizing: 30%
@@ -92,6 +91,7 @@ Server and client:
 DATE         WHO       		  WHAT
 20200810     Marcel Zapf  	  First Release
 20200916     Marcel Zapf      Added logic to check partition is too small
+20200929     Marcel Zapf      Added logic to autodetect part id, device and vg name
 ```
 
 License
