@@ -2,10 +2,6 @@
 - set_fact:
     lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
 
-- shell: pvdisplay
-  register: pvdisplay_info
-  become: yes
-
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
 
@@ -13,7 +9,7 @@
     msg: "Disk detected: {{ lvm_device_auto }}"
 
 - debug:
-    msg: "PV detected: {{ pvdisplay_info }}"
+    msg: "PV detected: {{ ansible_facts }}"
 
 - name: Output facts
   debug:
