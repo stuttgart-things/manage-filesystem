@@ -9,7 +9,7 @@
     msg: "Disk detected: {{ lvm_device_auto }}"
 
 - debug:
-    msg: "PV detected: {{ ansible_facts.lvm | grep pvs }}"
+    msg: "PV detected: {{ ansible_facts.lvm }}"
 
 - name: Output facts
   debug:
