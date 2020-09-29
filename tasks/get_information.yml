@@ -14,11 +14,10 @@
       - '!all'
       - '!any'
       - facter
-    filter: lvm
   register: lvm_facts
 
 - debug:
-    msg: "PV detected: {{ ansible_facts.lvm }}"
+    msg: "PV detected: {{ lvm_facts }}"
 
 - name: Output facts
   debug:
