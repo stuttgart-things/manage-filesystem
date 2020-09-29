@@ -1,6 +1,6 @@
 ---
 - name: LVM - Conduct resize test of physical volumes
-  shell: "pvresize {{ lvm_device }}{{ lvm_device_part_number }}"
+  shell: "pvresize {{ lvm_device.stdout }}"
 
 - name: "Resize lv {{ lv_home_name }} in {{ lvm_vg }}"
   lvol:

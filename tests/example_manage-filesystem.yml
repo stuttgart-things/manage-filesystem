@@ -3,9 +3,6 @@
   gather_facts: true
   become: true
   vars:
-    lvm_device: /dev/sda
-    lvm_device_part_number: 2
-    lvm_vg: vg0
     lvm_home_sizing: 10%
     lvm_root_sizing: 60%
     lvm_var_sizing: 30%

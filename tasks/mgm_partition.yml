@@ -1,4 +1,4 @@
 ---
 - name: Partition - Conduct resize physical disk partition
-  shell: "growpart {{ lvm_device }} {{ lvm_device_part_number }}"
+  shell: "growpart {{ lvm_device.stdout }}"
   ignore_errors: yes

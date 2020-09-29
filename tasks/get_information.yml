@@ -33,6 +33,7 @@
 
 - set_fact:
     part_free_space: "{{ part_free_space_unfiltered.stdout | replace('GB', '') | int }}"
+    lvm_vg: "{{ lvm_vol_group.stdout }}"
 
 - debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
