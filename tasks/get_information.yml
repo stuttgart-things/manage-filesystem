@@ -8,8 +8,15 @@
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
+- name: Collect only facts returned by facter
+  setup:
+    gather_subset:
+      - '!all'
+      - '!any'
+      - facter
+
 - debug:
-    msg: "PV detected: {{ ansible_facts }}"
+    msg: "PV detected: "
 
 - name: Output facts
   debug:
