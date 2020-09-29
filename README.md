@@ -89,9 +89,9 @@ Server and client:
 ## Version:
 ```
 DATE         WHO       		  WHAT
-20200810     Marcel Zapf    First Release
-20200916     Marcel Zapf    Added logic to check partition is too small
-20200929     Marcel Zapf    Added logic to autodetect part id, device and vg name
+20200810     Marcel Zapf      First Release
+20200916     Marcel Zapf      Added logic to check partition is too small
+20200929     Marcel Zapf      Added logic to autodetect part id, device and vg name
 ```
 
 License
