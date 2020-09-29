@@ -15,7 +15,7 @@
 
 - name: Output facts
   debug:
-    var: ansible_facts.lvm | json_query('pvs[*].vg
+    var: "{{ ansible_facts.lvm | json_query('pvs[*].vg }}"
 
 - name: Output facts
   debug:
