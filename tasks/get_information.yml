@@ -8,8 +8,13 @@
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
+- name: Search LVM volume group name
+  shell: "pvdisplay | grep 'VG Name' | awk '{print $3}'"
+  become: yes
+  register: lvm_vol_group
+
 - debug:
-    msg: "PV detected: {{ ansible_facts.lvm.pvs }}"
+    msg: "PV detected: {{ lvm_vol_group }}"
 
 - name: Output facts
   debug:
