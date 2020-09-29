@@ -14,7 +14,7 @@
   register: lvm_vol_group
 
 - debug:
-    msg: "PV detected: {{ lvm_vol_group }}"
+    msg: "PV detected: {{ lvm_vol_group.stdout }}"
 
 - name: Output facts
   debug:
