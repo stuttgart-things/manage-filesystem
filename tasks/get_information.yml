@@ -1,11 +1,6 @@
 ---
-- name: Get disk automatically if not defined
-  block:
-    - set_fact:
-        lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
-  rescue:
-    - set_fact:
-        lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
+- set_fact:
+    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
   when: lvm_disk not defined
 
 - set_fact:
