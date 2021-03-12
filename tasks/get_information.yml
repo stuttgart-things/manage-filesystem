@@ -1,6 +1,6 @@
 ---
 - set_fact:
-    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', '{% if cloud_provider == 'vsphere' %}sd.*{% elif cloud_provider == 'pve' %}vd.*{% endif %}') | select('string') | list }}"
+    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', '{{ lv_select }}') | select('string') | list }}"
 
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
