@@ -3,5 +3,4 @@ part_sizing: 100%
 lv_home_name: home
 lv_var_name: var
 lv_root_name: root
-lv_select: "{% if cloud_provider == 'vsphere' %}sd.*{% elif cloud_provider == 'pve' %}vd.*{% endif %}"
 debug: false
