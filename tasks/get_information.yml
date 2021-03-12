@@ -1,15 +1,12 @@
 ---
 - set_fact:
-    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
-  when: lvm_disk not defined
+    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', '{% if cloud_provider == 'vsphere' %}sd.*{% elif cloud_provider == 'pve' %}vd.*{% endif %}') | select('string') | list }}"
 
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
-  when: lvm_disk[0] is not defined
 
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
-  when: lvm_disk[0] is not defined
 
 - name: Search LVM volume group name
   shell: "pvdisplay | grep 'VG Name' | awk '{print $3}'"
