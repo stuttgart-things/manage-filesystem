@@ -1,20 +1,17 @@
 ---
-- name: Get disk automatically if not defined
+- name: Get disk 
   block:
     - set_fact:
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
   rescue:
     - set_fact:
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
-  when: lvm_disk not defined
 
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
-  when: lvm_disk[0] is not defined
 
 - debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
-  when: lvm_disk[0] is not defined
 
 - name: Search LVM volume group name
   shell: "pvdisplay | grep 'VG Name' | awk '{print $3}'"
