@@ -1,6 +1,11 @@
 ---
-- set_fact:
-    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
+- name: Get disk 
+  block:
+    - set_fact:
+        lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
+  rescue:
+    - set_fact:
+        lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
 
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
