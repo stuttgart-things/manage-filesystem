@@ -1,0 +1,11 @@
+---
+- name: Import get information tasks
+  include_tasks: get-information.yaml
+
+- name: Import partition tasks
+  include_tasks: mgm-partition.yaml
+  when: part_free_space | int >= 1
+
+- name: Import lvm tasks
+  include_tasks: mgm-lvm.yaml
+  when: part_free_space | int >= 1 
