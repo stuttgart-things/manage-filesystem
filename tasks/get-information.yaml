@@ -1,12 +1,16 @@
 ---
-- name: Handle filesystem scanning
-  block:
-    - set_fact:
-        lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
+- name: Get OS
+  ansible.builtin.debug:
+    msg: "Detected OS -> {{ ansible_distribution }}-{{ ansible_distribution_major_version }} on hypervisor -> {{ ansible_virtualization_type }}"
 
-  rescue:
-    - set_fact:
-        lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
+
+- set_fact:
+    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
+  when: ansible_virtualization_type == "VMware"
+
+- set_fact:
+    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
+  when: ansible_virtualization_type == "kvm"
 
 - set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
