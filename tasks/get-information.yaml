@@ -1,7 +1,4 @@
 ---
-- set_fact:
-    lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
-
 - name: Handle filesystem scanning
   block:
     - set_fact:
