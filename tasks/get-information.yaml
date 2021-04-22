@@ -45,7 +45,7 @@
   when: debug | bool
 
 - name: "Read partition information from {{ lvm_device_auto }}"
-  shell: "parted {{ lvm_device_auto }} unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
+  shell: "parted {{ lvm_device_auto }} -s unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
   become: yes
   register: part_free_space_unfiltered
 
