@@ -16,51 +16,51 @@
 - name: filesystem detection for KVM
   block:
 
-    - debug:
+    - ansible.builtin.debug:
         msg: "Using filesystem detection for KVM ..."
 
-    - set_fact:
+    - ansible.builtin.set_fact:
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
   when: ansible_virtualization_type == 'kvm'
 
-- set_fact:
+- ansible.builtin.set_fact:
     lvm_device_auto: "/dev/{{ lvm_disk[0] }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: "Disk detected: {{ lvm_device_auto }}"
 
 - name: Search LVM volume group name
-  shell: "pvdisplay | grep 'VG Name' | awk '{print $3}'"
+  ansible.builtin.shell: "pvdisplay | grep 'VG Name' | awk '{print $3}'"
   become: yes
   register: lvm_vol_group
 
 - name: Search LVM device path
-  shell: "pvdisplay | grep 'PV Name' | awk '{print $3}'"
+  ansible.builtin.shell: "pvdisplay | grep 'PV Name' | awk '{print $3}'"
   become: yes
   register: lvm_device
 
 - name: Output facts
-  debug:
+  ansible.builtin.debug:
     var: ansible_facts
   when: debug | bool
 
 - name: "Read partition information from {{ lvm_device_auto }}"
-  shell: "parted {{ lvm_device_auto }} -s unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
+  ansible.builtin.shell: "parted {{ lvm_device_auto }} -s unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
   become: yes
   register: part_free_space_unfiltered
 
-- set_fact:
+- ansible.builtin.set_fact:
     part_free_space: "{{ part_free_space_unfiltered.stdout | replace('GB', '') | int }}"
     lvm_vg: "{{ lvm_vol_group.stdout }}"
     lvm_device_part_number: "{{ lvm_device.stdout[-1] }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: "LVM found: PV: {{ lvm_vol_group.stdout }} on device {{ lvm_device_auto }} with part id: {{ lvm_device_part_number }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
   when: part_free_space | int >= 1 
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, no enlargement needed ..."
   when: part_free_space | int < 1
