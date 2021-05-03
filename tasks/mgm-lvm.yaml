@@ -1,24 +1,25 @@
 ---
 - name: LVM - Conduct resize test of physical volumes
-  shell: "pvresize {{ lvm_device.stdout }}"
+  ansible.builtin.shell: "pvresize {{ lvm_device.stdout }}"
 
 - name: "Resize lv {{ lv_home_name }} in {{ lvm_vg }}"
-  lvol:
+  community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_home_name }}"
     size: "{{ lvm_home_sizing }}PVS"
     resizefs: true
 
 - name: "Resize lv {{ lv_var_name }} in {{ lvm_vg }}"
-  lvol:
+  community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_var_name }}"
     size: "{{ lvm_var_sizing }}PVS"
     resizefs: true
 
 - name: "Resize lv {{ lv_root_name }} in {{ lvm_vg }}"
-  lvol:
+  community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_root_name }}"
     size: "{{ lvm_root_sizing }}PVS"
     resizefs: true
+  ignore_errors: true
