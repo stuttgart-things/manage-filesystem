@@ -3,7 +3,7 @@
   ansible.builtin.shell: "pvresize {{ lvm_device.stdout }}"
 
 - name: Resize lv {{ lv_home_name }} in {{ lvm_vg }}
-  community.general.lvol:
+  community.general.system.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_home_name }}"
     size: "{{ lvm_home_sizing }}PVS"
@@ -11,7 +11,7 @@
     force: yes
 
 - name: Resize lv {{ lv_var_name }} in {{ lvm_vg }}
-  community.general.lvol:
+  community.general.system.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_var_name }}"
     size: "{{ lvm_var_sizing }}PVS"
@@ -19,7 +19,7 @@
     force: yes
 
 - name: Resize lv {{ lv_root_name }} in {{ lvm_vg }}
-  community.general.lvol:
+  community.general.system.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_root_name }}"
     size: "{{ lvm_root_sizing }}PVS"
