@@ -53,7 +53,7 @@ ansible-playbook -i inventory manage-filesystem.yml
 
 
 ## Role TODOs
-- Full list visible at https://tbd
+- Full list visible at https://github.com/stuttgart-things/manage-filesystem/issues
 
 
 
