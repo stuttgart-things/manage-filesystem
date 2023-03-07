@@ -3,7 +3,7 @@
   ansible.builtin.debug:
     msg: "Detected OS: {{ ansible_distribution }}-{{ ansible_distribution_major_version }} on hypervisor: {{ ansible_virtualization_type }}"
 
-- name: filesystem detection for VMWARE
+- name: Filesystem detection for VMWARE
   block:
 
     - debug:
@@ -13,7 +13,7 @@
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
   when: ansible_virtualization_type == 'VMware'
 
-- name: filesystem detection for KVM
+- name: Filesystem detection for KVM
   block:
 
     - ansible.builtin.debug:
@@ -31,12 +31,12 @@
 
 - name: Search LVM volume group name
   ansible.builtin.shell: "pvdisplay | grep 'VG Name' | awk '{print $3}'"
-  become: yes
+  become: true
   register: lvm_vol_group
 
 - name: Search LVM device path
   ansible.builtin.shell: "pvdisplay | grep 'PV Name' | awk '{print $3}'"
-  become: yes
+  become: true
   register: lvm_device
 
 - name: Output facts
@@ -46,7 +46,7 @@
 
 - name: "Read partition information from {{ lvm_device_auto }}"
   ansible.builtin.shell: "parted {{ lvm_device_auto }} -s unit GB print free | grep 'Free Space' | tail -n1 | awk '{print $3}'"
-  become: yes
+  become: true
   register: part_free_space_unfiltered
 
 - ansible.builtin.set_fact:
