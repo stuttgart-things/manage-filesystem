@@ -8,4 +8,4 @@
 
 - name: Import lvm tasks
   ansible.builtin.include_tasks: mgm-lvm.yaml
-  when: part_free_space | int >= 1 
+  when: part_free_space | int >= 1

@@ -65,7 +65,7 @@
 - name: Show unused space for enlargement
   ansible.builtin.debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, start lvm enlargement process ..."
-  when: part_free_space | int >= 1 
+  when: part_free_space | int >= 1
 
 - name: Show if enlargement is not necessary
   ansible.builtin.debug:
