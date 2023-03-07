@@ -9,7 +9,7 @@ The role automatically detects the LVM on the system. The partitions and the dev
 
 ```
 cat <<EOF > /tmp/requirements.yaml
-- src: git@codehub.sva.de:Lab/stuttgart-things/supporting-roles/manage-filesystem.git
+- src: https://github.com/stuttgart-things/install-configure-podman.git
   scm: git
 EOF
 ansible-galaxy install -r /tmp/requirements.yaml --force
@@ -53,7 +53,7 @@ ansible-playbook -i inventory manage-filesystem.yml
 
 
 ## Role TODOs
-- Full list visible at https://codehub.sva.de/Lab/stuttgart-things/supporting-roles/manage-filesystem/-/issues
+- Full list visible at https://tbd
 
 
 
@@ -99,4 +99,4 @@ BSD
 Author Information
 ------------------
 
-Marcel Zapf; 08/2020; SVA GmbH
+Marcel Zapf; 08/2020; Stuttgart-Things

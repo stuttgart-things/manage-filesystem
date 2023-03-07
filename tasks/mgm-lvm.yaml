@@ -22,6 +22,6 @@
   community.general.system.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_var_name }}"
-    size: 100%FREE #"{{ lvm_var_sizing }}PVS"
+    size: "{{ lvm_var_sizing }}PVS"
     resizefs: true
     force: yes
