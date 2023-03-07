@@ -7,11 +7,5 @@
     lvm_root_sizing: 60%
     lvm_var_sizing: 30%
 
-#Not implementet yet!!
-    vcenter_add_hdd: true
-    vcenter_grow_disk: true
-    new_lv_name: srv
-    new_lv_mnt: /srv
-
   roles:
     - manage-filesystem
