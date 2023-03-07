@@ -8,7 +8,7 @@
     lv: "{{ lv_root_name }}"
     size: "{{ lvm_root_sizing }}PVS"
     resizefs: true
-    force: yes
+    force: true
 
 - name: Resize lv {{ lv_home_name }} in {{ lvm_vg }}
   community.general.system.lvol:
@@ -16,7 +16,7 @@
     lv: "{{ lv_home_name }}"
     size: "{{ lvm_home_sizing }}PVS"
     resizefs: true
-    force: yes
+    force: true
 
 - name: Resize lv {{ lv_var_name }} in {{ lvm_vg }}
   community.general.system.lvol:
@@ -24,4 +24,4 @@
     lv: "{{ lv_var_name }}"
     size: "{{ lvm_var_sizing }}PVS"
     resizefs: true
-    force: yes
+    force: true
