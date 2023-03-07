@@ -5,10 +5,12 @@
 
 - name: Filesystem detection for VMWARE
   block:
-    - ansible.builtin.debug:
+    - name: Debug
+      ansible.builtin.debug:
         msg: "Using filesystem detection for VMWARE ..."
 
-    - ansible.builtin.set_fact:
+    - name: Search lvm disk
+      ansible.builtin.set_fact:
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
   when: ansible_virtualization_type == 'VMware'
 
