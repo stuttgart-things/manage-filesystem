@@ -3,9 +3,8 @@
 handle repartitioning (LVM) with filesystem resizing support. For example, you can simply expand the LVM after enlarging the vhd. 
 The role automatically detects the LVM on the system. The partitions and the device id are also recognized automatically.
 
-## Example playbooks to use this role
-
-<details><summary>Install this role on your ansible host</summary>
+### Role installation:
+<details><summary><b>Install this role on your ansible host (click here)</b></summary>
 
 ```
 cat <<EOF > /tmp/requirements.yaml
@@ -14,9 +13,9 @@ cat <<EOF > /tmp/requirements.yaml
 EOF
 ansible-galaxy install -r /tmp/requirements.yaml --force
 ```
-
 </details>
 
+## Example playbooks to use this role
 
 <details><summary>Example playbook </summary>
 
