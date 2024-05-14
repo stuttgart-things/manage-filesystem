@@ -1,6 +1,7 @@
 ---
 - name: LVM - Conduct resize test of physical volumes
   ansible.builtin.shell: "pvresize {{ lvm_device.stdout }}"
+  changed_when: true
 
 - name: Resize lv {{ lv_root_name }} in {{ lvm_vg }}
   community.general.system.lvol:

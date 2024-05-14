@@ -2,3 +2,4 @@
 - name: Partition - Conduct resize physical disk partition
   ansible.builtin.shell: "growpart {{ lvm_device_auto }} {{ lvm_device_part_number }}"
   ignore_errors: true
+  changed_when: true
