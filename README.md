@@ -37,7 +37,8 @@ Server and client:
 
 ```bash
 cat <<EOF > /tmp/requirements.yaml
-- src: https://github.com/stuttgart-things/install-configure-podman.git
+- src: https://github.com/stuttgart-things/manage-filesystem.git
+  version: 2024.05.15
   scm: git
 EOF
 
