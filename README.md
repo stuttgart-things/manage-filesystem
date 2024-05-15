@@ -14,11 +14,7 @@ The role automatically detects the LVM on the system. The partitions and the dev
 Server and client:
 - Ubuntu 24.04
 - Ubuntu 22.04
-- Ubuntu 20.04
-- Ubuntu 18.04
 - Rocky 9
-- CentOS 8
-- CentOS 7
 
 </details>
 
