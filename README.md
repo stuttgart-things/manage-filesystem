@@ -3,62 +3,22 @@
 handle repartitioning (LVM) with filesystem resizing support. For example, you can simply expand the LVM after enlarging the vhd. 
 The role automatically detects the LVM on the system. The partitions and the device id are also recognized automatically.
 
-### Role installation:
-<details><summary><b>Install this role on your ansible host (click here)</b></summary>
+**Note: You can easy check your partition number via fdisk or parted**
 
-```
-cat <<EOF > /tmp/requirements.yaml
-- src: https://github.com/stuttgart-things/install-configure-podman.git
-  scm: git
-EOF
-ansible-galaxy install -r /tmp/requirements.yaml --force
-```
-</details>
-
-## Example playbooks to use this role
-
-<details><summary>Example playbook </summary>
-
-```
-- hosts: "fs"
-  gather_facts: true
-  become: true
-  vars:
-    lvm_home_sizing: 10%
-    lvm_root_sizing: 60%
-    lvm_var_sizing: 30%
-
-  roles:
-    - manage-filesystem
-```
+**Note: The enlargement of the file system is automatically calculated from the new free space**
 
 **Note: This role requires become yes**
+
+<details><summary>REQUIREMENTS AND DEPENDENCIES</summary>
+
+Server and client:
+- Ubuntu 24.04
+- Ubuntu 22.04
+- Rocky 9
+
 </details>
 
-<details><summary>Example inventory</summary>
-
-```
-[fs]
-foo.bar.example.com ansible_user=foobar
-```
-</details>
-
-<details><summary>Execute playbook</summary>
-
-```
-ansible-playbook -i inventory manage-filesystem.yml
-```
-</details>
-
-
-## Role TODOs
-- Full list visible at https://github.com/stuttgart-things/manage-filesystem/issues
-
-
-
-## Variables
-
-This role need variables
+<details><summary>VARIABLES</summary>
 
 1. requiered vars:
     - lvm_home_sizing: 10%
@@ -71,31 +31,95 @@ This role need variables
     - lv_var_name: var
     - lv_root_name: root
 
-**Note: You can easy check your partition number via fdisk or parted**
+</details>
 
-**Note: The enlargement of the file system is automatically calculated from the new free space**
-    
-## Requirements and Dependencies:
-Server and client:
-- Ubuntu 20.04
-- Ubuntu 18.04
-- CentOS 8
-- CentOS 7
+<details><summary>ROLE INSTALLATION</summary>
 
-## Version:
-```
-DATE         WHO       		  WHAT
-20200810     Marcel Zapf      First Release
-20200916     Marcel Zapf      Added logic to check partition is too small
-20200929     Marcel Zapf      Added logic to autodetect part id, device and vg name
+```bash
+cat <<EOF > /tmp/requirements.yaml
+- src: https://github.com/stuttgart-things/manage-filesystem.git
+  version: 2024.05.15
+  scm: git
+EOF
+
+ansible-galaxy install -r /tmp/requirements.yaml --force
 ```
 
-License
--------
+</details>
 
-BSD
+<details><summary>EXAMPLE INVENTORY</summary>
+
+```bash
+cat <<EOF > inventory
+[appserver]
+1.2.3.4 ansible_user=sthings
+EOF
+```
+
+</details>
+
+<details><summary>EXAMPLE PLAYBOOK</summary>
+
+```yaml
+cat <<EOF > manage-filesystem.yaml
+---
+- hosts: "{{ target_host | default('all') }}"
+  gather_facts: true
+  become: true
+  vars:
+    lvm_home_sizing: 10%
+    lvm_root_sizing: 60%
+    lvm_var_sizing: 30%
+
+  roles:
+    - manage-filesystem
+EOF
+```
+
+</details>
+
+<details><summary>EXAMPLE EXECUTION</summary>
+
+```bash
+ansible-playbook -i inventory manage-filesystem.yaml -vv 
+```
+
+</details>
+
+
+## License
+<details><summary>LICENSE</summary>
+
+Copyright 2020 patrick hermann.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+</details>
+
+Role history
+----------------
+| date  | who | changelog |
+|---|---|---|
+|2024-05-14  | Andre Ebert | Added Ansible-lint and Yamllint with skip rules and testing
+|2020-29-09  | Marcel Zapf | Added logic to autodetect part id, device and vg name
+|2020-16-09  | Marcel Zapf | Added logic to check partition is too small
+|2020-10-08  | Marcel Zapf | First Release
 
 Author Information
 ------------------
 
+```yaml
+Andre Ebert (andre.ebert@sva.de); 05/2024
+
 Marcel Zapf; 08/2020; Stuttgart-Things
+```

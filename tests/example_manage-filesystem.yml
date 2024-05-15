@@ -1,5 +1,5 @@
 ---
-- hosts: "fs"
+- hosts: "{{ target_host | default('all') }}"
   gather_facts: true
   become: true
   vars:
