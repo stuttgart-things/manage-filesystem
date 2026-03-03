@@ -3,26 +3,60 @@
   ansible.builtin.shell: "pvresize {{ lvm_device.stdout }}"
   changed_when: true
 
+- name: Detect filesystem type on LVs
+  ansible.builtin.shell: "blkid -o value -s TYPE /dev/{{ lvm_vg }}/{{ item }}"
+  loop:
+    - "{{ lv_root_name }}"
+    - "{{ lv_home_name }}"
+    - "{{ lv_var_name }}"
+  register: lv_fs_types
+  changed_when: false
+
+- name: Set filesystem type facts
+  ansible.builtin.set_fact:
+    fs_type_map: "{{ fs_type_map | default({}) | combine({item.item: item.stdout}) }}"
+  loop: "{{ lv_fs_types.results }}"
+  loop_control:
+    label: "{{ item.item }}: {{ item.stdout }}"
+
 - name: Resize lv {{ lv_root_name }} in {{ lvm_vg }}
   community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_root_name }}"
     size: "{{ lvm_root_sizing }}PVS"
-    resizefs: true
+    resizefs: false
     force: true
+
+- name: Resize filesystem on {{ lv_root_name }}
+  ansible.builtin.command: >-
+    {{ 'xfs_growfs' if fs_type_map[lv_root_name] == 'xfs' else 'resize2fs' }}
+    /dev/{{ lvm_vg }}/{{ lv_root_name }}
+  changed_when: true
 
 - name: Resize lv {{ lv_home_name }} in {{ lvm_vg }}
   community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_home_name }}"
     size: "{{ lvm_home_sizing }}PVS"
-    resizefs: true
+    resizefs: false
     force: true
+
+- name: Resize filesystem on {{ lv_home_name }}
+  ansible.builtin.command: >-
+    {{ 'xfs_growfs' if fs_type_map[lv_home_name] == 'xfs' else 'resize2fs' }}
+    /dev/{{ lvm_vg }}/{{ lv_home_name }}
+  changed_when: true
 
 - name: Resize lv {{ lv_var_name }} in {{ lvm_vg }}
   community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_var_name }}"
     size: +100%FREE
-    resizefs: true
+    resizefs: false
     force: true
+
+- name: Resize filesystem on {{ lv_var_name }}
+  ansible.builtin.command: >-
+    {{ 'xfs_growfs' if fs_type_map[lv_var_name] == 'xfs' else 'resize2fs' }}
+    /dev/{{ lvm_vg }}/{{ lv_var_name }}
+  changed_when: true

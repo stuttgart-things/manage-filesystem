@@ -76,3 +76,18 @@
   ansible.builtin.debug:
     msg: "{{ lvm_device_auto }} has: {{ part_free_space }} GB unused, no enlargement needed ..."
   when: part_free_space | int < 1
+
+- name: Check VG free space
+  ansible.builtin.shell: "vgs --noheadings -o vg_free --units g {{ lvm_vg }} | awk '{print int($1)}'"
+  become: true
+  register: vg_free_space_raw
+  changed_when: false
+
+- name: Set VG free space fact
+  ansible.builtin.set_fact:
+    vg_free_space: "{{ vg_free_space_raw.stdout | int }}"
+
+- name: Show VG free space
+  ansible.builtin.debug:
+    msg: "VG {{ lvm_vg }} has {{ vg_free_space }} GB free for LV resizing"
+  when: vg_free_space | int >= 1
