@@ -1,7 +1,7 @@
 ---
 - name: Get OS
   ansible.builtin.debug:
-    msg: "Detected OS: {{ ansible_distribution }}-{{ ansible_distribution_major_version }} on hypervisor: {{ ansible_virtualization_type }}"
+    msg: "Detected OS: {{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'] }} on hypervisor: {{ ansible_facts['virtualization_type'] }}"
 
 - name: Filesystem detection for VMWARE
   block:
@@ -12,7 +12,7 @@
     - name: Search lvm disk
       ansible.builtin.set_fact:
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
-  when: ansible_virtualization_type == 'VMware'
+  when: ansible_facts['virtualization_type'] == 'VMware'
 
 - name: Filesystem detection for KVM
   block:
@@ -24,7 +24,7 @@
     - name: Set lvm disk vars
       ansible.builtin.set_fact:
         lvm_disk: "{{ ansible_facts.devices.keys() | map('regex_search', 'vd.*') | select('string') | list }}"
-  when: ansible_virtualization_type == 'kvm'
+  when: ansible_facts['virtualization_type'] == 'kvm'
 
 - name: Locate lvm disk
   ansible.builtin.set_fact:
