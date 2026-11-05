@@ -23,9 +23,12 @@
 # size into a no-op (ok, not changed) instead of an lvreduce -- which fails on
 # xfs and, with older lvm2 (< 2.03.17) that does not check the filesystem, can
 # cut a mounted ext4. `force` is not set: lvol only needs it for lvreduce and
-# lvremove, lvextend never uses it. The filesystem grow only runs when lvol
-# actually extended the LV; it stays inline (no-handler) because the caller
-# may use the grown space later in the same play (handlers run at its end).
+# lvremove, lvextend never uses it.
+# The filesystem grow always runs, so a rerun also finishes a grow that failed
+# after an earlier lvextend. Growing to the current size is a no-op for both
+# tools; `changed` comes from their output: xfs_growfs prints "data blocks
+# changed" (stdout) only when it grew, resize2fs prints "Nothing to do!"
+# (stderr) when the fs already fills the LV.
 - name: Resize lv {{ lv_root_name }} in {{ lvm_vg }}
   community.general.lvol:
     vg: "{{ lvm_vg }}"
@@ -35,12 +38,15 @@
     shrink: false
   register: manage_filesystem_lv_root_resize
 
-- name: Resize filesystem on {{ lv_root_name }} # noqa: no-handler
+- name: Resize filesystem on {{ lv_root_name }}
   ansible.builtin.command: >-
     {{ 'xfs_growfs' if fs_type_map[lv_root_name] == 'xfs' else 'resize2fs' }}
     /dev/{{ lvm_vg }}/{{ lv_root_name }}
-  changed_when: true
-  when: manage_filesystem_lv_root_resize is changed
+  register: manage_filesystem_fs_root_grow
+  changed_when: >-
+    ('data blocks changed' in manage_filesystem_fs_root_grow.stdout)
+    if fs_type_map[lv_root_name] == 'xfs' else
+    ('Nothing to do' not in (manage_filesystem_fs_root_grow.stdout ~ manage_filesystem_fs_root_grow.stderr))
 
 - name: Resize lv {{ lv_home_name }} in {{ lvm_vg }}
   community.general.lvol:
@@ -51,12 +57,15 @@
     shrink: false
   register: manage_filesystem_lv_home_resize
 
-- name: Resize filesystem on {{ lv_home_name }} # noqa: no-handler
+- name: Resize filesystem on {{ lv_home_name }}
   ansible.builtin.command: >-
     {{ 'xfs_growfs' if fs_type_map[lv_home_name] == 'xfs' else 'resize2fs' }}
     /dev/{{ lvm_vg }}/{{ lv_home_name }}
-  changed_when: true
-  when: manage_filesystem_lv_home_resize is changed
+  register: manage_filesystem_fs_home_grow
+  changed_when: >-
+    ('data blocks changed' in manage_filesystem_fs_home_grow.stdout)
+    if fs_type_map[lv_home_name] == 'xfs' else
+    ('Nothing to do' not in (manage_filesystem_fs_home_grow.stdout ~ manage_filesystem_fs_home_grow.stderr))
 
 - name: Resize lv {{ lv_var_name }} in {{ lvm_vg }}
   community.general.lvol:
@@ -67,9 +76,12 @@
     shrink: false
   register: manage_filesystem_lv_var_resize
 
-- name: Resize filesystem on {{ lv_var_name }} # noqa: no-handler
+- name: Resize filesystem on {{ lv_var_name }}
   ansible.builtin.command: >-
     {{ 'xfs_growfs' if fs_type_map[lv_var_name] == 'xfs' else 'resize2fs' }}
     /dev/{{ lvm_vg }}/{{ lv_var_name }}
-  changed_when: true
-  when: manage_filesystem_lv_var_resize is changed
+  register: manage_filesystem_fs_var_grow
+  changed_when: >-
+    ('data blocks changed' in manage_filesystem_fs_var_grow.stdout)
+    if fs_type_map[lv_var_name] == 'xfs' else
+    ('Nothing to do' not in (manage_filesystem_fs_var_grow.stdout ~ manage_filesystem_fs_var_grow.stderr))
