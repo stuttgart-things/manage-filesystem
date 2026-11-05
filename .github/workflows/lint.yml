@@ -31,7 +31,9 @@ jobs:
     with:
       runs-on: ghr-manage-filesystem-in-cluster
       environment-name: k8s
-      continue-error: true
+      continue-error: false
       ansible-image: ghcr.io/stuttgart-things/sthings-ansible:13.5.0-test
       playbook: tests/test-lvm-never-shrink.yml
+      # Lint is clean: findings fail the job (github-workflow-templates#228).
+      fail-on-findings: true
     needs: yaml-lint
