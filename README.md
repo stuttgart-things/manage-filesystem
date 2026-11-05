@@ -9,6 +9,8 @@ The role automatically detects the LVM on the system. The partitions and the dev
 
 **Note: This role requires become yes**
 
+**Note: Logical volumes only ever grow.** `root` and `home` are sized with `lvm_*_sizing` as a share of the PVs (`%PVS`); if that share is smaller than or equal to the current LV size, the LV is left as it is (task reports `ok`). The filesystem grow (`xfs_growfs` / `resize2fs`) only runs when the LV was actually extended. `var` takes the rest of the VG (`+100%FREE`). Regression test: `tests/test-lvm-never-shrink.yml` (destructive, scratch host only).
+
 <details><summary>REQUIREMENTS AND DEPENDENCIES</summary>
 
 Server and client:
@@ -110,6 +112,7 @@ Role history
 ----------------
 | date  | who | changelog |
 |---|---|---|
+|2026-11-05  | Patrick Hermann | LVs never shrink: lvol `shrink: false`, no `force`, fs grow only when the LV changed (#6)
 |2024-05-14  | Andre Ebert | Added Ansible-lint and Yamllint with skip rules and testing
 |2020-29-09  | Marcel Zapf | Added logic to autodetect part id, device and vg name
 |2020-16-09  | Marcel Zapf | Added logic to check partition is too small

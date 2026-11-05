@@ -19,19 +19,28 @@
   loop_control:
     label: "{{ item.item }}: {{ item.stdout }}"
 
+# LVs only ever grow (#6). `shrink: false` turns a target below the current
+# size into a no-op (ok, not changed) instead of an lvreduce -- which fails on
+# xfs and, with older lvm2 (< 2.03.17) that does not check the filesystem, can
+# cut a mounted ext4. `force` is not set: lvol only needs it for lvreduce and
+# lvremove, lvextend never uses it. The filesystem grow only runs when lvol
+# actually extended the LV; it stays inline (no-handler) because the caller
+# may use the grown space later in the same play (handlers run at its end).
 - name: Resize lv {{ lv_root_name }} in {{ lvm_vg }}
   community.general.lvol:
     vg: "{{ lvm_vg }}"
     lv: "{{ lv_root_name }}"
     size: "{{ lvm_root_sizing }}PVS"
     resizefs: false
-    force: true
+    shrink: false
+  register: manage_filesystem_lv_root_resize
 
-- name: Resize filesystem on {{ lv_root_name }}
+- name: Resize filesystem on {{ lv_root_name }} # noqa: no-handler
   ansible.builtin.command: >-
     {{ 'xfs_growfs' if fs_type_map[lv_root_name] == 'xfs' else 'resize2fs' }}
     /dev/{{ lvm_vg }}/{{ lv_root_name }}
   changed_when: true
+  when: manage_filesystem_lv_root_resize is changed
 
 - name: Resize lv {{ lv_home_name }} in {{ lvm_vg }}
   community.general.lvol:
@@ -39,13 +48,15 @@
     lv: "{{ lv_home_name }}"
     size: "{{ lvm_home_sizing }}PVS"
     resizefs: false
-    force: true
+    shrink: false
+  register: manage_filesystem_lv_home_resize
 
-- name: Resize filesystem on {{ lv_home_name }}
+- name: Resize filesystem on {{ lv_home_name }} # noqa: no-handler
   ansible.builtin.command: >-
     {{ 'xfs_growfs' if fs_type_map[lv_home_name] == 'xfs' else 'resize2fs' }}
     /dev/{{ lvm_vg }}/{{ lv_home_name }}
   changed_when: true
+  when: manage_filesystem_lv_home_resize is changed
 
 - name: Resize lv {{ lv_var_name }} in {{ lvm_vg }}
   community.general.lvol:
@@ -53,10 +64,12 @@
     lv: "{{ lv_var_name }}"
     size: +100%FREE
     resizefs: false
-    force: true
+    shrink: false
+  register: manage_filesystem_lv_var_resize
 
-- name: Resize filesystem on {{ lv_var_name }}
+- name: Resize filesystem on {{ lv_var_name }} # noqa: no-handler
   ansible.builtin.command: >-
     {{ 'xfs_growfs' if fs_type_map[lv_var_name] == 'xfs' else 'resize2fs' }}
     /dev/{{ lvm_vg }}/{{ lv_var_name }}
   changed_when: true
+  when: manage_filesystem_lv_var_resize is changed

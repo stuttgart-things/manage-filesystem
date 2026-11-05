@@ -1,0 +1,137 @@
+---
+# Regression test for #6: LVs only ever grow.
+#
+# Builds a throwaway VG on a loop device (root ext4, home xfs, var ext4, all
+# mounted), runs tasks/mgm-lvm.yaml with a share, then again with a SMALLER
+# share and asserts the second run is ok (no lvreduce, no fs grow) and the
+# filesystems are intact.
+#
+# DESTRUCTIVE for the VG named below -- run only on a scratch host, e.g. a
+# privileged container that has lvm2, xfsprogs and e2fsprogs installed:
+#   docker run -d --privileged -v /dev:/dev --name mfs ubuntu:24.04 sleep infinity
+#   (apt-get install -y python3 lvm2 xfsprogs e2fsprogs inside it; in a container
+#   set activation/udev_sync = 0 and udev_rules = 0 in /etc/lvm/lvm.conf)
+#   ansible-playbook -i 'mfs,' -c community.docker.docker -e ansible_become=false \
+#     -e ansible_python_interpreter=/usr/bin/python3 tests/test-lvm-never-shrink.yml
+- hosts: "{{ target_host | default('all') }}"
+  gather_facts: false
+  become: true
+  vars:
+    test_vg: mfstest
+    test_img: /root/mfstest-pv.img
+    lv_root_name: root
+    lv_home_name: home
+    lv_var_name: var
+    test_fs:
+      root: ext4
+      home: xfs
+      var: ext4
+
+  tasks:
+    - name: Create loop device backing file
+      ansible.builtin.command: "truncate -s 2G {{ test_img }}"
+      args:
+        creates: "{{ test_img }}"
+
+    - name: Attach loop device
+      ansible.builtin.command: "losetup -f --show {{ test_img }}"
+      register: test_loop
+      changed_when: true
+
+    - name: Create VG
+      community.general.lvg:
+        vg: "{{ test_vg }}"
+        pvs: "{{ test_loop.stdout }}"
+
+    - name: Create LVs
+      community.general.lvol:
+        vg: "{{ test_vg }}"
+        lv: "{{ item }}"
+        size: 300m
+      loop: "{{ test_fs.keys() | list }}"
+
+    - name: Create filesystems
+      community.general.filesystem:
+        dev: "/dev/{{ test_vg }}/{{ item.key }}"
+        fstype: "{{ item.value }}"
+      loop: "{{ test_fs | dict2items }}"
+
+    - name: Mount filesystems
+      ansible.posix.mount:
+        src: "/dev/{{ test_vg }}/{{ item.key }}"
+        path: "/mnt/{{ test_vg }}-{{ item.key }}"
+        fstype: "{{ item.value }}"
+        state: ephemeral
+      loop: "{{ test_fs | dict2items }}"
+
+    - name: Facts normally set by get-information.yaml
+      ansible.builtin.set_fact:
+        lvm_vg: "{{ test_vg }}"
+        lvm_device: "{{ test_loop }}"
+
+    - name: First run -- grow (root 25%, home 40%)
+      ansible.builtin.include_tasks: ../tasks/mgm-lvm.yaml
+      vars:
+        lvm_root_sizing: 25%
+        lvm_home_sizing: 40%
+
+    - name: Assert first run grew the LVs
+      ansible.builtin.assert:
+        that:
+          - manage_filesystem_lv_root_resize is changed
+          - manage_filesystem_lv_home_resize is changed
+
+    - name: Second run -- smaller share (root 10%, home 15%) must be a no-op
+      ansible.builtin.include_tasks: ../tasks/mgm-lvm.yaml
+      vars:
+        lvm_root_sizing: 10%
+        lvm_home_sizing: 15%
+
+    - name: Assert second run did not touch the LVs
+      ansible.builtin.assert:
+        that:
+          - manage_filesystem_lv_root_resize is not changed
+          - manage_filesystem_lv_home_resize is not changed
+          - manage_filesystem_lv_var_resize is not changed
+
+    - name: Read LV sizes
+      ansible.builtin.command: "lvs --noheadings --units m -o lv_size {{ test_vg }}/{{ item }}"
+      loop: [root, home]
+      register: test_sizes
+      changed_when: false
+
+    - name: Assert LVs kept their grown size
+      ansible.builtin.assert:
+        that:
+          - test_sizes.results[0].stdout | trim == '512.00m'
+          - test_sizes.results[1].stdout | trim == '820.00m'
+
+    - name: Unmount filesystems
+      ansible.posix.mount:
+        path: "/mnt/{{ test_vg }}-{{ item }}"
+        state: unmounted
+      loop: "{{ test_fs.keys() | list }}"
+
+    - name: Check ext4 filesystems
+      ansible.builtin.command: "e2fsck -fn /dev/{{ test_vg }}/{{ item }}"
+      loop: [root, var]
+      changed_when: false
+
+    - name: Check xfs filesystem
+      ansible.builtin.command: "xfs_repair -n /dev/{{ test_vg }}/home"
+      changed_when: false
+
+    - name: Remove VG
+      community.general.lvg:
+        vg: "{{ test_vg }}"
+        state: absent
+        force: true
+
+    - name: Detach loop device
+      ansible.builtin.command: "losetup -d {{ test_loop.stdout }}"
+      changed_when: true
+
+    - name: Remove backing file
+      ansible.builtin.file:
+        path: "{{ test_img }}"
+        state: absent
