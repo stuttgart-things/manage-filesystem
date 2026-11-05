@@ -32,6 +32,6 @@ jobs:
       runs-on: ghr-manage-filesystem-in-cluster
       environment-name: k8s
       continue-error: true
-      ansible-image: eu.gcr.io/stuttgart-things/sthings-ansible:9.3.0-1
-      playbook: tests/test.yml
+      ansible-image: ghcr.io/stuttgart-things/sthings-ansible:13.5.0-test
+      playbook: tests/test-lvm-never-shrink.yml
     needs: yaml-lint
